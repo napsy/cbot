@@ -90,7 +90,7 @@ int cbot_channel_antiflood(struct _network *network, const char *channel,
         return 0;
     }
 
-    if ((strcmp(chan->last_message->channel, cur_msg->channel) == 0) &&
+    if ((strcmp(chan->last_message->source, cur_msg->source) == 0) &&
                 (strcmp(chan->last_message->nick, cur_msg->nick) == 0)) {
 
         elapsed = difftime(cur_time, chan->message_time);
