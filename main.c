@@ -72,16 +72,34 @@ void show_about(struct _network *network, struct _cbot_irc_message *msg)
 
 char *check_db(const char *topic)
 {
-    char *help[2][512]= {{"ubuntu", "Ubuntu je GNU/Linux distribucija"},
-                      {"xorg",
-                       "X.Org je strežnik, ki poskrbi za izris na zaslon"}};
-    int i;
-    
-    for (i = 0; i < 2; i++) {
-        if (strcasestr(help[i][0], topic)) {
-            return help[i][1];
+    FILE *db_file = fopen("tell_db.txt", "r");
+    char *line = malloc(512),
+         db_topic[128],
+         *db_answer[512],
+         *tmp;
+
+    if (!db_file) {
+        printf("* error opening \'tell_db.txt\' for \'!tell\' command\n");
+        return NULL;
+    }
+
+    while (fgets(line, 512, db_file)) {
+        if (strcasestr(line, topic) == line) {
+            tmp = strchr(line, '=');
+            if (!tmp) {
+                printf("* no \'=\' character found in !tell DB entry\n");
+                fclose(db_file);
+                free(line);
+                return NULL;
+            }
+            fclose(db_file);
+            free(line);
+            return strdup(tmp + 1);
         }
     }
+
+    free(line);
+    fclose(db_file);
     return NULL;
 }
 
@@ -97,7 +115,6 @@ void help_user(struct _network *network, struct _cbot_irc_message *msg)
     token = strtok(message, " \r", &tmp);
 
     while ((token = strtok(NULL, " \r", &tmp))) {
-        printf("TOKEN: %s\n", token);
         if (!target_nick)
             target_nick = strdup(token);
         else if (!topic)
@@ -112,6 +129,7 @@ void help_user(struct _network *network, struct _cbot_irc_message *msg)
         sprintf(answer_msg, "%s: %s", target_nick, answer);
         cbot_channel_send(network, msg->source, answer_msg);
         free(answer_msg);
+        free(answer);
     }
     
     if (target_nick)

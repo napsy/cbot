@@ -39,6 +39,7 @@ struct _channel {
     int flags;
 
     /* Used for spam protection. */
+    /* XXX: move this to a filter function */
     int message_count;
     time_t message_time;
     struct _cbot_irc_message *last_message;

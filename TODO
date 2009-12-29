@@ -1,0 +1,5 @@
+- handle disconnects
+- user permissions
+- channel operations (ban, kick, flags, ...)
+- remove leaks, provide _free() calls for structures, lists
+
