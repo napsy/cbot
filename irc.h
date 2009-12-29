@@ -43,7 +43,7 @@ struct _cbot_bot_command {
     char *cmd;
     int arg_count;
     char *arg_format;
-    void (*cb)();
+    void (*cb)(struct _network *network, struct _cbot_irc_message *msg);
 };
 
 GList *cbot_bot_commands;

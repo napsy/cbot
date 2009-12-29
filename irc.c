@@ -130,14 +130,16 @@ void cbot_irc_check_for_commands(struct _network *network, struct
 
     for (; tmp; tmp = tmp->next) {
         cmd = (struct _cbot_bot_command *)tmp->data;
-        if (strcasestr(cmd->cmd, msg->message)) {
+        if (strcasestr(msg->message, cmd->cmd) == msg->message) {
             found = TRUE;
             break;
         }
-
     }
-    if (found)
-        cmd->cb();
+    if (found) {
+        printf("* executing command \'%s\' requested by \'%s\'\n",
+                cmd->cmd, msg->nick);
+        cmd->cb(network, msg);
+    }
 }
 int cbot_irc_check_message(struct _cbot_irc_message *chan_msg)
 {
@@ -165,7 +167,8 @@ void cbot_bot_register_command(const char *cmd, int arg_count,
     struct _cbot_bot_command *bot_cmd = malloc(sizeof(*bot_cmd));
 
     bot_cmd->cmd = strdup(cmd);
-    bot_cmd->arg_format = strdup(arg_format);
+    if (arg_count > 0)
+        bot_cmd->arg_format = strdup(arg_format);
     bot_cmd->arg_count = arg_count;
     bot_cmd->cb = cmd_cb;
 

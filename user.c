@@ -32,3 +32,29 @@ int cbot_user_send(struct _network *network, const char *channel,
 {
 }
 
+int cbot_user_notice(struct _network *network, const char *user,
+        const char *message)
+{
+    char irc_notice[256];
+    int n;
+
+    sprintf(irc_notice, "NOTICE %s :%s\r\n", user, message);
+
+    n = write(network->conn.sd, irc_notice, strlen(irc_notice));
+    if (n == 0)
+        printf("Error sending PONG\n");
+}
+
+int cbot_user_kick(struct _network *network, const char *channel, 
+        const char *user)
+{
+    char irc_kick[256];
+    int n;
+
+    sprintf(irc_kick, "KICK %s %s\r\n", channel, user);
+
+    n = write(network->conn.sd, irc_kick, strlen(irc_kick));
+    if (n == 0)
+        printf("Error sending PONG\n");
+}
+

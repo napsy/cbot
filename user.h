@@ -37,5 +37,10 @@ struct _user {
 int cbot_user_send(struct _network *network, const char *channel, 
         const char *user, const char *message);
 
+int cbot_user_notice(struct _network *network, const char *user,
+        const char *message);
+
+int cbot_user_kick(struct _network *network, const char *channel, 
+        const char *user);
 #endif
 

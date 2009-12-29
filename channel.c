@@ -94,16 +94,26 @@ int cbot_channel_antiflood(struct _network *network, const char *channel,
                 (strcmp(chan->last_message->nick, cur_msg->nick) == 0)) {
 
         elapsed = difftime(cur_time, chan->message_time);
-        printf("Elapsed: %f\n", elapsed);
-        if (elapsed <= 2)
+        //printf("Elapsed: %f\n", elapsed);
+        if (elapsed <= 1)
             chan->message_count++;
         else
             chan->message_count = 0;
     } 
 
     if (chan->message_count >= 4)  {
-        cbot_channel_send(network, chan->name, "STOP FLOODING, IDIOT!");
-        chan->message_count = 0;
+#if 1
+        if (chan->message_count >= 8) {
+            cbot_user_kick(network, cur_msg->source, cur_msg->nick);
+            printf("* kicked user \'%s\' due to flooding\n", cur_msg->nick);
+        } else {
+            cbot_user_notice(network, cur_msg->nick, 
+                    "You've sent more then 3 messages in four seconds. Please use"
+                    " PASTEBIN in the future (http://pastebin.com)");
+            chan->message_count = 0;
+            printf("* sent a flood warning to user \'%s\'\n", cur_msg->nick);
+        }
+#endif
     }
 
     cbot_irc_message_destroy(chan->last_message);

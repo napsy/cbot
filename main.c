@@ -65,20 +65,29 @@ void *my_cb(struct _network *network, void *data)
     free(msg);
 }
 
+void show_about(struct _network *network, struct _cbot_irc_message *msg)
+{
+    cbot_channel_send(network, msg->source, "cbot 0.0.1 at your service!");
+}
 int main(int argc, char **argv)
 {
     GMainLoop *loop;
-    cbot_bot_commands = NULL;
+
     
     g_thread_init(NULL);
     loop = g_main_loop_new(NULL, TRUE);
 
+    cbot_bot_commands = NULL;
     struct _client *client = cbot_client_new("localhost", "tartarus-bot", "tartarus-bot",
             "cbot");
     struct _network *network = cbot_network_new("irc.freenode.net", 6667,
             client, my_cb);
+
+    cbot_bot_register_command("!about", 0, NULL, show_about);
     cbot_irc_register(network);
+    cbot_channel_join(network, "#ubuntu-si");
     cbot_channel_join(network, "#cbot-test");
+
     g_main_loop_run(loop);
     return 0;
 }
