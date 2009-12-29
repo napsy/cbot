@@ -85,7 +85,6 @@ int main(int argc, char **argv)
 
     cbot_bot_register_command("!about", 0, NULL, show_about);
     cbot_irc_register(network);
-    cbot_channel_join(network, "#ubuntu-si");
     cbot_channel_join(network, "#cbot-test");
 
     g_main_loop_run(loop);
