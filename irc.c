@@ -141,16 +141,6 @@ void cbot_irc_check_for_commands(struct _network *network, struct
         cmd->cb(network, msg);
     }
 }
-int cbot_irc_check_message(struct _cbot_irc_message *chan_msg)
-{
-    if (strchr(chan_msg->message, '!') == chan_msg->message) {
-        if (strcasecmp(chan_msg->message + 1, "about\r\n") == 0) {
-            printf("Sending response ...");
-            cbot_channel_send(chan_msg->network, chan_msg->source,
-                    "cbot 0.0.1 at your service");
-        }
-    }
-}
 
 void cbot_irc_message_destroy(struct _cbot_irc_message *chan_msg)
 {
